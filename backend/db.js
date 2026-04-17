@@ -1,9 +1,9 @@
 const Database = require("better-sqlite3");
 const path = require("path");
 
-// ✅ Safe DB path
 const db = new Database(path.join(__dirname, "o2c.db"));
 
+// ─── TABLES ─────────────────────────────────────────
 db.exec(`
   CREATE TABLE IF NOT EXISTS customers (
     id TEXT PRIMARY KEY,
@@ -74,15 +74,15 @@ db.exec(`
 `);
 
 
-// 🔥 ✅ FORCE SEED DATA (ALWAYS RESET CORRECTLY)
+// ─── FORCE RESET DEMO DATA (CRITICAL) ─────────────────
 
-// Customer
+// Customer (HIGH CREDIT + RESET USED)
 db.prepare(`
 INSERT OR REPLACE INTO customers (id, name, credit_limit, credit_used)
-VALUES ('C001', 'CityCare Hospital', 1000000, 0)
+VALUES ('C001', 'CityCare Hospital', 2000000, 0)
 `).run();
 
-// Inventory (HIGH STOCK → no ATP failure)
+// Inventory (HIGH STOCK)
 db.prepare(`
 INSERT OR REPLACE INTO inventory (material, description, qty, price)
 VALUES ('MED001', 'Paracetamol 500mg', 5000, 850)
