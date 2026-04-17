@@ -1,5 +1,8 @@
 const Database = require("better-sqlite3");
-const db = new Database("o2c.db");
+const path = require("path");
+
+// ✅ Safe DB path
+const db = new Database(path.join(__dirname, "o2c.db"));
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS customers (
@@ -68,10 +71,21 @@ db.exec(`
     to_doc TEXT,
     step TEXT
   );
-
-  -- Seed data
-  INSERT OR IGNORE INTO customers VALUES ('C001', 'CityCare Hospital', 1000000, 0);
-  INSERT OR IGNORE INTO inventory VALUES ('MED001', 'Paracetamol 500mg', 2000, 850);
 `);
+
+
+// 🔥 ✅ FORCE SEED DATA (ALWAYS RESET CORRECTLY)
+
+// Customer
+db.prepare(`
+INSERT OR REPLACE INTO customers (id, name, credit_limit, credit_used)
+VALUES ('C001', 'CityCare Hospital', 1000000, 0)
+`).run();
+
+// Inventory (HIGH STOCK → no ATP failure)
+db.prepare(`
+INSERT OR REPLACE INTO inventory (material, description, qty, price)
+VALUES ('MED001', 'Paracetamol 500mg', 5000, 850)
+`).run();
 
 module.exports = db;
