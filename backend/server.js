@@ -137,10 +137,9 @@ app.get("/api/status", (_req, res) => {
 });
 
 // ─── React fallback ──────────────────────────────────────────────────────────
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
 // ─── Start server (FIXED FOR RENDER) ─────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
